@@ -6,10 +6,8 @@
     <title>TVCL Update Tracker</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        
         body { background: #f0f2f5; }
 
-        /* NAVBAR */
         .navbar {
             background: #1a73e8;
             padding: 15px 30px;
@@ -22,7 +20,7 @@
         .nav-links a {
             color: white;
             text-decoration: none;
-            margin-left: 20px;
+            margin-left: 15px;
             padding: 8px 16px;
             border-radius: 5px;
             transition: background 0.3s;
@@ -30,11 +28,9 @@
         }
         .nav-links a:hover, .nav-links a.active { background: rgba(255,255,255,0.2); }
 
-        /* PAGES */
-        .page { display: none; padding: 30px; }
+        .page { display: none; padding: 25px; }
         .page.active { display: block; }
 
-        /* SEARCH */
         .search-container {
             background: white;
             padding: 20px;
@@ -43,58 +39,49 @@
             margin-bottom: 20px;
         }
         .search-container h2 { margin-bottom: 15px; color: #333; }
-        .search-box { display: flex; gap: 10px; }
+        .search-box { display: flex; gap: 10px; flex-wrap: wrap; }
         .search-box input {
             flex: 1;
-            padding: 12px 20px;
+            min-width: 200px;
+            padding: 11px 18px;
             border: 2px solid #1a73e8;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 15px;
             outline: none;
         }
-        .search-box input:focus { border-color: #0d47a1; box-shadow: 0 0 8px rgba(26,115,232,0.3); }
-        .search-box button {
-            padding: 12px 25px;
-            background: #1a73e8;
-            color: white;
+        .search-box input:focus { box-shadow: 0 0 8px rgba(26,115,232,0.3); }
+
+        .btn {
+            padding: 11px 22px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 15px;
-            transition: background 0.3s;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
         }
-        .search-box button:hover { background: #0d47a1; }
-        .clear-btn { background: #6c757d !important; }
-        .clear-btn:hover { background: #545b62 !important; }
+        .btn-blue { background: #1a73e8; color: white; }
+        .btn-blue:hover { background: #0d47a1; }
+        .btn-gray { background: #6c757d; color: white; }
+        .btn-gray:hover { background: #545b62; }
+        .btn-green { background: #28a745; color: white; }
+        .btn-green:hover { background: #1e7e34; }
+        .btn-red { background: #dc3545; color: white; }
+        .btn-red:hover { background: #c82333; }
 
-        /* STATS */
-        .stats-bar { display: flex; gap: 15px; margin-bottom: 20px; }
+        /* STATS - Only 2 cards */
+        .stats-bar { display: flex; gap: 12px; margin-bottom: 20px; }
         .stat-card {
             background: white;
-            padding: 15px 25px;
+            padding: 14px 20px;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             text-align: center;
             flex: 1;
         }
-        .stat-card .number { font-size: 28px; font-weight: bold; color: #1a73e8; }
-        .stat-card .label { color: #666; font-size: 13px; margin-top: 4px; }
+        .stat-card .number { font-size: 26px; font-weight: bold; color: #1a73e8; }
+        .stat-card .label { color: #666; font-size: 12px; margin-top: 4px; }
 
-        /* FILTER */
-        .filter-row { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-        .filter-btn {
-            padding: 7px 18px;
-            border: 2px solid #1a73e8;
-            background: white;
-            color: #1a73e8;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.3s;
-        }
-        .filter-btn:hover, .filter-btn.active { background: #1a73e8; color: white; }
-
-        /* TABLE */
         .table-container {
             background: white;
             border-radius: 10px;
@@ -102,81 +89,73 @@
             overflow: hidden;
         }
         .table-header {
-            padding: 15px 20px;
+            padding: 14px 20px;
             background: #f8f9fa;
             border-bottom: 1px solid #dee2e6;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .table-header h3 { color: #333; }
-        .result-count { color: #666; font-size: 14px; }
+        .result-count { color: #666; font-size: 13px; }
 
         table { width: 100%; border-collapse: collapse; }
         thead { background: #1a73e8; color: white; }
         thead th {
-            padding: 13px 14px;
+            padding: 12px 13px;
             text-align: left;
             font-weight: 600;
             cursor: pointer;
             white-space: nowrap;
-            font-size: 14px;
+            font-size: 13px;
         }
         thead th:hover { background: #0d47a1; }
-
         tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.2s; }
         tbody tr:hover { background: #e8f0fe; }
         tbody tr:nth-child(even) { background: #f8f9fa; }
         tbody tr:nth-child(even):hover { background: #e8f0fe; }
-        tbody td { padding: 11px 14px; font-size: 13px; color: #333; }
+        tbody td { padding: 10px 13px; font-size: 13px; color: #333; }
 
         .highlight { background: #ffeb3b; border-radius: 3px; padding: 1px 3px; }
 
-        /* BADGES */
         .badge {
-            padding: 3px 10px;
+            padding: 3px 9px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: bold;
             white-space: nowrap;
         }
-        .badge-promo { background: #e3f2fd; color: #1565c0; }
         .badge-coop { background: #fff3e0; color: #e65100; }
+        .badge-promo { background: #e3f2fd; color: #1565c0; }
         .badge-regular { background: #f3f4f6; color: #374151; }
         .badge-nonad { background: #fce4ec; color: #c62828; }
+        .badge-sponsored { background: #e8f5e9; color: #2e7d32; }
 
-        /* NOTE COLUMN */
         .note-cell {
-            max-width: 250px;
+            max-width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             cursor: pointer;
             color: #1a73e8;
-        }
-        .note-cell:hover { white-space: normal; color: #333; }
-
-        /* IMAGE PLACEHOLDER */
-        .img-placeholder {
-            width: 40px;
-            height: 30px;
-            background: #e0e0e0;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            cursor: pointer;
+            font-size: 12px;
         }
 
-        /* NO RESULTS */
         .no-results { text-align: center; padding: 50px; color: #999; }
         .no-results .icon { font-size: 50px; margin-bottom: 15px; }
 
-        /* PAGINATION */
-        .pagination { display: flex; justify-content: center; align-items: center; padding: 20px; gap: 5px; flex-wrap: wrap; }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 18px;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
         .page-btn {
-            padding: 7px 13px;
+            padding: 6px 12px;
             border: 1px solid #dee2e6;
             background: white;
             border-radius: 5px;
@@ -187,7 +166,61 @@
         .page-btn:hover, .page-btn.active { background: #1a73e8; color: white; border-color: #1a73e8; }
         .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        /* MANUAL FORM */
+        /* UPLOAD */
+        .upload-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+        .upload-section h2 {
+            color: #333;
+            margin-bottom: 8px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #1a73e8;
+        }
+        .upload-section p { color: #666; font-size: 14px; margin-bottom: 20px; }
+
+        .upload-area {
+            border: 3px dashed #1a73e8;
+            border-radius: 12px;
+            padding: 50px 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9ff;
+        }
+        .upload-area:hover, .upload-area.dragover {
+            background: #e8f0fe;
+            border-color: #0d47a1;
+            transform: scale(1.01);
+        }
+        .upload-area .upload-icon { font-size: 60px; margin-bottom: 15px; }
+        .upload-area h3 { color: #333; margin-bottom: 8px; }
+        .upload-area p { color: #888; font-size: 13px; margin: 0; }
+
+        .preview-section {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+        .preview-section h3 { color: #333; margin-bottom: 15px; }
+        .preview-table-wrap { overflow-x: auto; max-height: 350px; overflow-y: auto; }
+        .preview-info {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .preview-btn-row { display: flex; gap: 12px; margin-top: 18px; }
+
+        /* FORM */
         .form-container {
             background: white;
             padding: 30px;
@@ -196,11 +229,11 @@
         }
         .form-container h2 {
             color: #333;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             padding-bottom: 12px;
             border-bottom: 3px solid #1a73e8;
         }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
         .form-group { display: flex; flex-direction: column; }
         .form-group.full { grid-column: 1 / -1; }
         .form-group label { font-weight: 600; color: #555; margin-bottom: 7px; font-size: 14px; }
@@ -212,60 +245,35 @@
             outline: none;
             transition: border 0.3s;
         }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: #1a73e8; }
-        .form-group textarea { height: 90px; resize: vertical; }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus { border-color: #1a73e8; }
+        .form-group textarea { height: 85px; resize: vertical; }
         .required { color: red; }
+        .btn-row { display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
 
-        .btn-row { display: flex; gap: 15px; margin-top: 25px; }
-        .submit-btn {
-            padding: 12px 35px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-            transition: background 0.3s;
-        }
-        .submit-btn:hover { background: #1e7e34; }
-        .reset-btn {
-            padding: 12px 25px;
-            background: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-        }
-        .reset-btn:hover { background: #545b62; }
-
-        /* SUCCESS / ERROR */
         .alert {
             display: none;
-            padding: 14px 20px;
+            padding: 13px 18px;
             border-radius: 8px;
-            margin-top: 15px;
+            margin-top: 14px;
             font-weight: 500;
+            font-size: 14px;
         }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
-        /* TOAST */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #333;
-            color: white;
-            padding: 14px 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            display: none;
-            z-index: 9999;
-            font-size: 14px;
+        .how-to {
+            background: #fff8e1;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px 25px;
+            margin-bottom: 20px;
         }
+        .how-to h3 { color: #e65100; margin-bottom: 12px; }
+        .how-to ol { padding-left: 20px; }
+        .how-to ol li { margin-bottom: 8px; font-size: 14px; color: #555; line-height: 1.6; }
 
-        /* MODAL */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -279,10 +287,10 @@
         .modal-overlay.show { display: flex; }
         .modal {
             background: white;
-            padding: 30px;
+            padding: 28px;
             border-radius: 12px;
-            max-width: 600px;
-            width: 90%;
+            max-width: 580px;
+            width: 92%;
             max-height: 80vh;
             overflow-y: auto;
         }
@@ -295,93 +303,83 @@
             padding: 5px 12px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
         }
-        .modal-detail { margin: 10px 0; font-size: 14px; }
-        .modal-detail strong { color: #555; display: inline-block; width: 160px; }
+        .modal-detail { margin: 10px 0; font-size: 14px; line-height: 1.6; }
+        .modal-detail strong { color: #555; display: inline-block; width: 155px; vertical-align: top; }
 
-        /* DELETE BTN */
         .delete-btn {
             background: #dc3545;
             color: white;
             border: none;
-            padding: 4px 10px;
+            padding: 4px 9px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
         }
         .delete-btn:hover { background: #c82333; }
 
-        /* RESPONSIVE */
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: #333;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 9999;
+            font-size: 14px;
+        }
+
         @media (max-width: 768px) {
             .stats-bar { flex-direction: column; }
             .form-grid { grid-template-columns: 1fr; }
             .navbar { flex-direction: column; gap: 10px; }
             .page { padding: 15px; }
-            tbody td { font-size: 12px; padding: 8px 10px; }
+            tbody td { font-size: 12px; padding: 8px 9px; }
         }
     </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar">
     <h1>📊 TVCL Update Tracker</h1>
     <div class="nav-links">
         <a class="active" onclick="showPage('viewPage', this)">🔍 View Updates</a>
+        <a onclick="showPage('uploadPage', this)">📁 Bulk Upload</a>
         <a onclick="showPage('addPage', this)">➕ Add Update</a>
     </div>
 </nav>
 
-<!-- ========== VIEW PAGE ========== -->
+<!-- VIEW PAGE -->
 <div id="viewPage" class="page active">
 
-    <!-- Search -->
     <div class="search-container">
         <h2>🔍 Search Updates</h2>
         <div class="search-box">
             <input type="text" id="searchInput"
-                placeholder="Search by Creative ID, Primary Product, Secondary Product, Notes..."
+                placeholder="Search by Creative ID, Primary Product, Secondary, Notes..."
                 onkeyup="searchData()">
-            <button onclick="searchData()">🔍 Search</button>
-            <button class="clear-btn" onclick="clearSearch()">✖ Clear</button>
+            <button class="btn btn-blue" onclick="searchData()">🔍 Search</button>
+            <button class="btn btn-gray" onclick="clearSearch()">✖ Clear</button>
         </div>
     </div>
 
-    <!-- Stats -->
+    <!-- ONLY 2 STAT CARDS -->
     <div class="stats-bar">
         <div class="stat-card">
             <div class="number" id="totalCount">0</div>
             <div class="label">Total Updates</div>
         </div>
         <div class="stat-card">
-            <div class="number" id="coopCount">0</div>
-            <div class="label">Coop Updates</div>
-        </div>
-        <div class="stat-card">
-            <div class="number" id="promoCount">0</div>
-            <div class="label">Promo Updates</div>
-        </div>
-        <div class="stat-card">
             <div class="number" id="todayCount">0</div>
             <div class="label">Today's Updates</div>
         </div>
-        <div class="stat-card">
-            <div class="number" id="searchCount">0</div>
-            <div class="label">Search Results</div>
-        </div>
     </div>
 
-    <!-- Filters -->
-    <div class="filter-row">
-        <button class="filter-btn active" onclick="applyFilter('all', this)">📋 All</button>
-        <button class="filter-btn" onclick="applyFilter('coop', this)">🤝 Coop Only</button>
-        <button class="filter-btn" onclick="applyFilter('promo', this)">📺 Promo Only</button>
-        <button class="filter-btn" onclick="applyFilter('today', this)">📅 Today's</button>
-        <button class="filter-btn" onclick="applyFilter('nonad', this)">🚫 Non Ad</button>
-    </div>
+    <!-- NO FILTER BUTTONS -->
 
-    <!-- Table -->
     <div class="table-container">
         <div class="table-header">
             <h3>📋 Updates List</h3>
@@ -391,56 +389,106 @@
             <table>
                 <thead>
                     <tr>
-                        <th onclick="sortTable('date')"># &nbsp;📅 Date ↕</th>
+                        <th onclick="sortTable('date')"># 📅 Date ↕</th>
                         <th onclick="sortTable('creativeId')">🔢 Creative ID ↕</th>
                         <th onclick="sortTable('primaryProduct')">📦 Primary Product ↕</th>
                         <th onclick="sortTable('secondaryProduct')">🔗 Secondary Product ↕</th>
                         <th>📝 Notes</th>
-                        <th>🖼️ Image</th>
+                        <th onclick="sortTable('classifier')">👤 Classifier ↕</th>
                         <th>🏷️ Type</th>
-                        <th>⚙️ Action</th>
+                        <th>⚙️</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
             </table>
         </div>
-
         <div id="noResults" class="no-results" style="display:none;">
             <div class="icon">🔎</div>
             <h3>No results found!</h3>
             <p>Try different keywords</p>
         </div>
-
         <div class="pagination" id="pagination"></div>
     </div>
 </div>
 
-<!-- ========== ADD PAGE ========== -->
+<!-- BULK UPLOAD PAGE -->
+<div id="uploadPage" class="page">
+    <div class="how-to">
+        <h3>📌 Epdi Upload Pannanum:</h3>
+        <ol>
+            <li>Excel file open pannunga</li>
+            <li><strong>File → Save As → CSV UTF-8</strong> select pannunga</li>
+            <li>Keezhay irukura box-la CSV file drag & drop pannunga</li>
+            <li>Preview parunga - correct ah irukka confirm pannunga</li>
+            <li><strong>"✅ Import All Data"</strong> click pannunga</li>
+        </ol>
+    </div>
+
+    <div class="upload-section">
+        <h2>📁 Bulk Upload - CSV</h2>
+        <p>Excel file-la irukura ellam data um oru shot-la import pannalam!</p>
+        <div class="upload-area" id="uploadArea"
+             onclick="document.getElementById('csvFile').click()"
+             ondrop="handleDrop(event)"
+             ondragover="handleDragOver(event)"
+             ondragleave="handleDragLeave(event)">
+            <div class="upload-icon">📂</div>
+            <h3>Click here or Drag & Drop CSV file</h3>
+            <p>Excel → Save As → CSV format-la save panni upload pannunga</p>
+            <input type="file" id="csvFile" accept=".csv" style="display:none" onchange="handleFileSelect(event)">
+        </div>
+    </div>
+
+    <div class="preview-section" id="previewSection">
+        <h3>👀 Preview:</h3>
+        <div class="preview-info" id="previewInfo"></div>
+        <div class="preview-table-wrap">
+            <table id="previewTable">
+                <thead>
+                    <tr>
+                        <th style="background:#1a73e8;color:white;padding:10px;">📅 Date</th>
+                        <th style="background:#1a73e8;color:white;padding:10px;">🔢 Creative ID</th>
+                        <th style="background:#1a73e8;color:white;padding:10px;">📦 Primary Product</th>
+                        <th style="background:#1a73e8;color:white;padding:10px;">🔗 Secondary Product</th>
+                        <th style="background:#1a73e8;color:white;padding:10px;">📝 Notes</th>
+                        <th style="background:#1a73e8;color:white;padding:10px;">👤 Classifier</th>
+                    </tr>
+                </thead>
+                <tbody id="previewBody"></tbody>
+            </table>
+        </div>
+        <div class="preview-btn-row">
+            <button class="btn btn-green" onclick="confirmImport()">✅ Import All Data</button>
+            <button class="btn btn-red" onclick="cancelImport()">❌ Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- ADD PAGE -->
 <div id="addPage" class="page">
     <div class="form-container">
         <h2>➕ Add New Update</h2>
         <div class="form-grid">
-
             <div class="form-group">
                 <label>📅 Date <span class="required">*</span></label>
                 <input type="date" id="newDate">
             </div>
-
             <div class="form-group">
                 <label>🔢 Creative ID <span class="required">*</span></label>
-                <input type="text" id="newCreativeId" placeholder="e.g. 25081815612">
+                <input type="text" id="newCreativeId" placeholder="e.g. 25091867242">
             </div>
-
             <div class="form-group">
                 <label>📦 Primary Product <span class="required">*</span></label>
-                <input type="text" id="newPrimary" placeholder="e.g. Honda Accord Hybrid : Hybrid Car : Leasing">
+                <input type="text" id="newPrimary" placeholder="e.g. Honda Accord : Hybrid Car">
             </div>
-
             <div class="form-group">
-                <label>🔗 Secondary Product (Coop)</label>
-                <input type="text" id="newSecondary" placeholder="e.g. Amazon (Coop), Best Buy (Coop)">
+                <label>🔗 Secondary Product</label>
+                <input type="text" id="newSecondary" placeholder="e.g. Amazon (Coop)">
             </div>
-
+            <div class="form-group">
+                <label>👤 Classifier Name</label>
+                <input type="text" id="newClassifier" placeholder="e.g. Beth, Carlos">
+            </div>
             <div class="form-group">
                 <label>🏷️ Type</label>
                 <select id="newType">
@@ -451,233 +499,58 @@
                     <option value="Sponsored">Sponsored</option>
                 </select>
             </div>
-
-            <div class="form-group">
-                <label>🖼️ Image / Screenshot URL</label>
-                <input type="text" id="newImage" placeholder="Paste image URL (optional)">
-            </div>
-
             <div class="form-group full">
-                <label>📝 Note / Clarification Details</label>
-                <textarea id="newNote" placeholder="Add any clarification notes here... e.g. No coops on promos, Keep as is, etc."></textarea>
+                <label>📝 Note / Clarification</label>
+                <textarea id="newNote" placeholder="Add notes here..."></textarea>
             </div>
-
         </div>
-
         <div class="btn-row">
-            <button class="submit-btn" onclick="addEntry()">✅ Add Update</button>
-            <button class="reset-btn" onclick="resetForm()">🔄 Reset</button>
+            <button class="btn btn-green" onclick="addEntry()">✅ Add Update</button>
+            <button class="btn btn-gray" onclick="resetForm()">🔄 Reset</button>
         </div>
-
-        <div id="formSuccess" class="alert alert-success">✅ Update added successfully! View Updates page-la parunga!</div>
-        <div id="formError" class="alert alert-error">⚠️ Date, Creative ID, Primary Product - mandatory fields fill pannunga!</div>
+        <div id="formSuccess" class="alert alert-success">✅ Added! View Updates-la parunga!</div>
+        <div id="formError" class="alert alert-error">⚠️ Date, Creative ID, Primary - mandatory!</div>
     </div>
 </div>
 
 <!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-    <div class="modal" id="modalContent">
+    <div class="modal">
         <button class="modal-close" onclick="closeModalDirect()">✖ Close</button>
-        <h3 id="modalTitle">Update Details</h3>
+        <h3 id="modalTitle"></h3>
         <div id="modalBody"></div>
     </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ========== SAMPLE DATA (Unga Excel data) ==========
 let allData = [
-    {
-        id: 1,
-        date: "2026-08-25",
-        creativeId: "25088524275",
-        primaryProduct: "Southern Quality Ford Dealer Assn Bronco : Multi Gas SUVs/Crossovers : Dealer Assn - Sales Event",
-        secondaryProduct: "",
-        note: "",
-        image: "",
-        type: "Regular"
-    },
-    {
-        id: 2,
-        date: "2026-08-25",
-        creativeId: "25088510781",
-        primaryProduct: "NBC-Various Programs : Promo",
-        secondaryProduct: "",
-        note: "Keep that as is",
-        image: "",
-        type: "Promo"
-    },
-    {
-        id: 3,
-        date: "2026-08-25",
-        creativeId: "25085505360",
-        primaryProduct: "Dell PowerStore : Data Storage System",
-        secondaryProduct: "",
-        note: "",
-        image: "",
-        type: "Regular"
-    },
-    {
-        id: 4,
-        date: "2026-08-26",
-        creativeId: "25088591968",
-        primaryProduct: "Tuskegee University Golden Tigers Womens Soccer : Spectator Sporting Event",
-        secondaryProduct: "",
-        note: "",
-        image: "",
-        type: "Regular"
-    },
-    {
-        id: 5,
-        date: "2026-08-26",
-        creativeId: "25088619153",
-        primaryProduct: "Big Board Sports Special : Promo",
-        secondaryProduct: "",
-        note: "No coops on promos",
-        image: "",
-        type: "Promo"
-    },
-    {
-        id: 6,
-        date: "2026-08-26",
-        creativeId: "25088619169",
-        primaryProduct: "Gospel Notes : Promo",
-        secondaryProduct: "",
-        note: "",
-        image: "",
-        type: "Promo"
-    },
-    {
-        id: 7,
-        date: "2026-08-26",
-        creativeId: "25067744073",
-        primaryProduct: "Studio 814 : Promo",
-        secondaryProduct: "",
-        note: "Please make sure classifiers understand we do not use these products. AI autoclassifier chooses these a lot but they should not be used.",
-        image: "",
-        type: "Promo"
-    },
-    {
-        id: 8,
-        date: "2026-08-03",
-        creativeId: "25086195478",
-        primaryProduct: "Clorox ToiletWand : Toilet Cleaner",
-        secondaryProduct: "",
-        note: "",
-        image: "",
-        type: "Regular"
-    },
-    {
-        id: 9,
-        date: "2026-08-04",
-        creativeId: "25086119007",
-        primaryProduct: "CiShirts Printing/Sign Services & Courtside Marketing Advertising/Marketing Services : Combo",
-        secondaryProduct: "",
-        note: "",
-        image: "",
-        type: "Regular"
-    },
-    {
-        id: 10,
-        date: "2026-08-04",
-        creativeId: "25083276257",
-        primaryProduct: "PlayingWithHeart.com : High Cholesterol",
-        secondaryProduct: "",
-        note: "",
-        image: "",
-        type: "Regular"
-    },
-    {
-        id: 11,
-        date: "2026-08-04",
-        creativeId: "25085963053",
-        primaryProduct: "Non Ad",
-        secondaryProduct: "",
-        note: "",
-        image: "",
-        type: "Non Ad"
-    },
-    {
-        id: 12,
-        date: "2026-08-04",
-        creativeId: "25086021452",
-        primaryProduct: "ABC-Hearts Of Heros : Promo",
-        secondaryProduct: "",
-        note: "",
-        image: "",
-        type: "Promo"
-    },
-    {
-        id: 13,
-        date: "2026-08-04",
-        creativeId: "25086198828",
-        primaryProduct: "Idaho Central Credit Union : Consumer Checking",
-        secondaryProduct: "",
-        note: "",
-        image: "",
-        type: "Regular"
-    },
-    {
-        id: 14,
-        date: "2026-08-04",
-        creativeId: "25086215647",
-        primaryProduct: "Visible : Consumer Pre-Paid Wireless Service",
-        secondaryProduct: "Best Buy : Phones & Equipment (Coop)",
-        note: "",
-        image: "",
-        type: "Coop"
-    },
-    {
-        id: 15,
-        date: "2026-08-04",
-        creativeId: "25086234426",
-        primaryProduct: "Idaho Central Credit Union : Consumer Checking",
-        secondaryProduct: "",
-        note: "",
-        image: "",
-        type: "Regular"
-    },
-    {
-        id: 16,
-        date: "2026-08-04",
-        creativeId: "25086230615",
-        primaryProduct: "Subaru Of New England Dealer Assn Forester : Multi SUVs/Crossovers : Dealer Assn - Sales Event",
-        secondaryProduct: "",
-        note: "",
-        image: "",
-        type: "Regular"
-    },
-    {
-        id: 17,
-        date: "2026-08-04",
-        creativeId: "25085955817",
-        primaryProduct: "NACA Neighborhood Assistance Corp Of America : Corporate Sponsorship",
-        secondaryProduct: "",
-        note: "",
-        image: "",
-        type: "Sponsored"
-    }
+    { id:1, date:"2026-09-14", creativeId:"25090589993", primaryProduct:"Ace Hardware : Paint", secondaryProduct:"Benjamin Moore : Paint (Coop), Magnolia Home : Paint (Coop)", note:"", classifier:"Carlos", type:"Coop" },
+    { id:2, date:"2026-09-12", creativeId:"25089749762", primaryProduct:"Giant Food Store : Groceries", secondaryProduct:"", note:"Not multi-products. All products shown are groceries", classifier:"Beth", type:"Regular" },
+    { id:3, date:"2026-09-18", creativeId:"25091484824", primaryProduct:"Stand Up To Cancer : Cancer Organization", secondaryProduct:"American Airlines Aadvantage (Coop)", note:"Stand Up To Cancer with American Airlines as coop", classifier:"Beth", type:"Coop" },
+    { id:4, date:"2026-09-18", creativeId:"25091497637", primaryProduct:"Samsung : OLED TV", secondaryProduct:"", note:"Samsung OLED TV ad showing football broadcast", classifier:"Mustafa Shaikh", type:"Regular" },
+    { id:5, date:"2026-08-14", creativeId:"25087281303", primaryProduct:"Carolina Ford Dealer Assn : Multi Gas SUVs", secondaryProduct:"Ford Explorer (Multi), Ford Bronco Sport (Multi)", note:"", classifier:"Beth", type:"Coop" },
+    { id:6, date:"2026-08-14", creativeId:"25087267716", primaryProduct:"FOX-Celebrity Crime Scene", secondaryProduct:"", note:"", classifier:"Beth", type:"Promo" },
+    { id:7, date:"2026-04-23", creativeId:"25074847219", primaryProduct:"Total Wireless : Multi Consumer Pre-Paid Wireless", secondaryProduct:"Samsung Galaxy A36 (Coop), Samsung Galaxy A26 (Coop)", note:"Total Wireless Total 5G Unlimited Plan", classifier:"Jennifer Connelly", type:"Coop" }
 ];
 
 let filteredData = [...allData];
 let currentPage = 1;
 const rowsPerPage = 15;
-let currentFilter = 'all';
 let sortKey = 'date';
 let sortAsc = false;
 let nextId = allData.length + 1;
+let pendingImportData = [];
 
-// ========== INIT ==========
 window.onload = function() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('newDate').value = today;
+    filteredData = [...allData];
     updateStats();
     renderTable();
 };
 
-// ========== SHOW PAGE ==========
 function showPage(pageId, el) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
@@ -685,74 +558,40 @@ function showPage(pageId, el) {
     el.classList.add('active');
 }
 
-// ========== SEARCH ==========
 function searchData() {
     const kw = document.getElementById('searchInput').value.toLowerCase().trim();
-    let base = getBase();
-    if (kw) {
-        filteredData = base.filter(r =>
-            r.creativeId.toLowerCase().includes(kw) ||
-            r.primaryProduct.toLowerCase().includes(kw) ||
-            r.secondaryProduct.toLowerCase().includes(kw) ||
-            r.note.toLowerCase().includes(kw) ||
-            r.type.toLowerCase().includes(kw) ||
-            r.date.includes(kw)
-        );
-    } else {
-        filteredData = base;
-    }
+    filteredData = kw ? allData.filter(r =>
+        (r.creativeId||'').toLowerCase().includes(kw) ||
+        (r.primaryProduct||'').toLowerCase().includes(kw) ||
+        (r.secondaryProduct||'').toLowerCase().includes(kw) ||
+        (r.note||'').toLowerCase().includes(kw) ||
+        (r.classifier||'').toLowerCase().includes(kw) ||
+        (r.type||'').toLowerCase().includes(kw) ||
+        (r.date||'').includes(kw)
+    ) : [...allData];
     currentPage = 1;
-    document.getElementById('searchCount').textContent = filteredData.length;
     renderTable();
 }
 
 function clearSearch() {
     document.getElementById('searchInput').value = '';
-    filteredData = getBase();
+    filteredData = [...allData];
     currentPage = 1;
-    document.getElementById('searchCount').textContent = filteredData.length;
     renderTable();
 }
 
-// ========== FILTER ==========
-function getBase() {
-    const today = new Date().toISOString().split('T')[0];
-    switch(currentFilter) {
-        case 'coop': return allData.filter(d => d.type === 'Coop');
-        case 'promo': return allData.filter(d => d.type === 'Promo');
-        case 'today': return allData.filter(d => d.date === today);
-        case 'nonad': return allData.filter(d => d.type === 'Non Ad');
-        default: return [...allData];
-    }
-}
-
-function applyFilter(filter, btn) {
-    currentFilter = filter;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('searchInput').value = '';
-    filteredData = getBase();
-    currentPage = 1;
-    document.getElementById('searchCount').textContent = filteredData.length;
-    renderTable();
-}
-
-// ========== SORT ==========
 function sortTable(key) {
     if (sortKey === key) sortAsc = !sortAsc;
     else { sortKey = key; sortAsc = true; }
     filteredData.sort((a, b) => {
-        const va = (a[key] || '').toString().toLowerCase();
-        const vb = (b[key] || '').toString().toLowerCase();
-        if (va < vb) return sortAsc ? -1 : 1;
-        if (va > vb) return sortAsc ? 1 : -1;
-        return 0;
+        const va = (a[key]||'').toString().toLowerCase();
+        const vb = (b[key]||'').toString().toLowerCase();
+        return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
     });
     currentPage = 1;
     renderTable();
 }
 
-// ========== RENDER TABLE ==========
 function renderTable() {
     const kw = document.getElementById('searchInput').value.toLowerCase().trim();
     const tbody = document.getElementById('tableBody');
@@ -775,24 +614,14 @@ function renderTable() {
 
     tbody.innerHTML = pageData.map((row, idx) => `
         <tr>
-            <td>${start + idx + 1} &nbsp; ${formatDate(row.date)}</td>
+            <td>${start + idx + 1} &nbsp;${formatDate(row.date)}</td>
             <td><strong>${hl(row.creativeId, kw)}</strong></td>
-            <td style="max-width:220px">${hl(row.primaryProduct, kw)}</td>
-            <td style="max-width:180px">${row.secondaryProduct ? hl(row.secondaryProduct, kw) : '<span style="color:#ccc">-</span>'}</td>
-            <td>
-                ${row.note
-                    ? `<span class="note-cell" title="${row.note}" onclick="showModal(${row.id})">📝 ${row.note.substring(0,30)}${row.note.length > 30 ? '...' : ''}</span>`
-                    : '<span style="color:#ccc">-</span>'}
-            </td>
-            <td>
-                ${row.image
-                    ? `<img src="${row.image}" style="width:40px;height:30px;border-radius:4px;object-fit:cover;cursor:pointer" onclick="showModal(${row.id})">`
-                    : `<div class="img-placeholder" onclick="showModal(${row.id})">🖼️</div>`}
-            </td>
+            <td style="max-width:200px">${hl(row.primaryProduct, kw)}</td>
+            <td style="max-width:160px">${row.secondaryProduct ? hl(row.secondaryProduct, kw) : '<span style="color:#ccc">-</span>'}</td>
+            <td>${row.note ? `<span class="note-cell" title="${row.note}" onclick="showModal(${row.id})">📝 ${row.note.substring(0,28)}${row.note.length>28?'...':''}</span>` : '<span style="color:#ccc">-</span>'}</td>
+            <td>${hl(row.classifier||'-', kw)}</td>
             <td>${getTypeBadge(row.type)}</td>
-            <td>
-                <button class="delete-btn" onclick="deleteEntry(${row.id})">🗑️</button>
-            </td>
+            <td><button class="delete-btn" onclick="deleteEntry(${row.id})">🗑️</button></td>
         </tr>
     `).join('');
 
@@ -807,8 +636,8 @@ function hl(text, kw) {
 
 function formatDate(d) {
     if (!d) return '-';
-    const dt = new Date(d);
-    return dt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    const dt = new Date(d + 'T00:00:00');
+    return dt.toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
 }
 
 function getTypeBadge(type) {
@@ -817,26 +646,24 @@ function getTypeBadge(type) {
         'Promo': '<span class="badge badge-promo">📺 Promo</span>',
         'Non Ad': '<span class="badge badge-nonad">🚫 Non Ad</span>',
         'Regular': '<span class="badge badge-regular">📋 Regular</span>',
-        'Sponsored': '<span class="badge" style="background:#e8f5e9;color:#2e7d32">⭐ Sponsored</span>'
+        'Sponsored': '<span class="badge badge-sponsored">⭐ Sponsored</span>'
     };
-    return map[type] || `<span class="badge badge-regular">${type}</span>`;
+    return map[type] || `<span class="badge badge-regular">${type||'Regular'}</span>`;
 }
 
-// ========== PAGINATION ==========
 function renderPagination() {
     const total = Math.ceil(filteredData.length / rowsPerPage);
     const pg = document.getElementById('pagination');
     if (total <= 1) { pg.innerHTML = ''; return; }
-
-    let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>◀ Prev</button>`;
+    let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>◀</button>`;
     for (let i = 1; i <= total; i++) {
-        if (i === 1 || i === total || (i >= currentPage-2 && i <= currentPage+2)) {
+        if (i===1||i===total||(i>=currentPage-2&&i<=currentPage+2)) {
             html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
-        } else if (i === currentPage-3 || i === currentPage+3) {
+        } else if (i===currentPage-3||i===currentPage+3) {
             html += `<span style="padding:5px">...</span>`;
         }
     }
-    html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===total?'disabled':''}>Next ▶</button>`;
+    html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===total?'disabled':''}>▶</button>`;
     pg.innerHTML = html;
 }
 
@@ -847,76 +674,189 @@ function goPage(p) {
     renderTable();
 }
 
-// ========== STATS ==========
 function updateStats() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('totalCount').textContent = allData.length;
-    document.getElementById('coopCount').textContent = allData.filter(d => d.type === 'Coop').length;
-    document.getElementById('promoCount').textContent = allData.filter(d => d.type === 'Promo').length;
     document.getElementById('todayCount').textContent = allData.filter(d => d.date === today).length;
-    document.getElementById('searchCount').textContent = filteredData.length;
 }
 
-// ========== ADD ENTRY ==========
+// CSV UPLOAD
+function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('uploadArea').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) processCSV(file);
+}
+function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('uploadArea').classList.add('dragover');
+}
+function handleDragLeave(e) {
+    document.getElementById('uploadArea').classList.remove('dragover');
+}
+function handleFileSelect(e) {
+    const file = e.target.files[0];
+    if (file) processCSV(file);
+}
+
+function processCSV(file) {
+    if (!file.name.endsWith('.csv')) {
+        showToast('⚠️ CSV file mattum upload pannunga!');
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const text = e.target.result;
+        const rows = text.split('\n').filter(r => r.trim());
+        if (rows.length < 2) { showToast('⚠️ File-la data illai!'); return; }
+
+        const headers = rows[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g,''));
+        pendingImportData = [];
+
+        for (let i = 1; i < rows.length; i++) {
+            const cols = parseCSVRow(rows[i]);
+            if (cols.length < 2) continue;
+
+            const getCol = (...names) => {
+                for (let name of names) {
+                    const idx = headers.findIndex(h => h.includes(name));
+                    if (idx !== -1) return (cols[idx]||'').trim().replace(/^"|"$/g,'');
+                }
+                return '';
+            };
+
+            const dateRaw = getCol('date');
+            const creativeId = getCol('creative id', 'creativeid', 'id');
+            const primary = getCol('primary product', 'primary');
+            const secondary = getCol('secondary product', 'secondary');
+            const note = getCol('note', 'clarification', 'details');
+            const classifier = getCol('classifier', 'name');
+
+            if (!creativeId && !primary) continue;
+
+            let type = 'Regular';
+            if (secondary && secondary.toLowerCase().includes('coop')) type = 'Coop';
+            else if (primary.toLowerCase().includes('promo')) type = 'Promo';
+            else if (primary.toLowerCase().includes('non ad')) type = 'Non Ad';
+
+            let formattedDate = '';
+            if (dateRaw) {
+                const d = new Date(dateRaw);
+                if (!isNaN(d)) formattedDate = d.toISOString().split('T')[0];
+                else formattedDate = dateRaw;
+            }
+
+            pendingImportData.push({ date: formattedDate, creativeId, primaryProduct: primary, secondaryProduct: secondary, note, classifier, type });
+        }
+
+        if (pendingImportData.length === 0) {
+            showToast('⚠️ Data parse aagalai!');
+            return;
+        }
+        showPreview();
+    };
+    reader.readAsText(file);
+}
+
+function parseCSVRow(row) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < row.length; i++) {
+        if (row[i] === '"') inQuotes = !inQuotes;
+        else if (row[i] === ',' && !inQuotes) { result.push(current); current = ''; }
+        else current += row[i];
+    }
+    result.push(current);
+    return result;
+}
+
+function showPreview() {
+    const previewSection = document.getElementById('previewSection');
+    document.getElementById('previewInfo').textContent = `✅ ${pendingImportData.length} rows ready! Correct ah irukka confirm pannunga.`;
+    const show = pendingImportData.slice(0, 10);
+    document.getElementById('previewBody').innerHTML = show.map(row => `
+        <tr style="border-bottom:1px solid #eee;">
+            <td style="padding:8px;font-size:13px;">${row.date||'-'}</td>
+            <td style="padding:8px;font-size:13px;"><strong>${row.creativeId||'-'}</strong></td>
+            <td style="padding:8px;font-size:13px;max-width:200px;">${row.primaryProduct||'-'}</td>
+            <td style="padding:8px;font-size:13px;">${row.secondaryProduct||'-'}</td>
+            <td style="padding:8px;font-size:13px;">${row.note||'-'}</td>
+            <td style="padding:8px;font-size:13px;">${row.classifier||'-'}</td>
+        </tr>
+    `).join('') + (pendingImportData.length > 10 ? `<tr><td colspan="6" style="padding:10px;text-align:center;color:#666;">... and ${pendingImportData.length - 10} more rows</td></tr>` : '');
+    previewSection.style.display = 'block';
+    previewSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+function confirmImport() {
+    let added = 0, duplicates = 0;
+    pendingImportData.forEach(row => {
+        const exists = allData.find(d => d.creativeId === row.creativeId);
+        if (exists) duplicates++;
+        else { allData.unshift({ id: nextId++, ...row }); added++; }
+    });
+    filteredData = [...allData];
+    currentPage = 1;
+    updateStats();
+    renderTable();
+    document.getElementById('previewSection').style.display = 'none';
+    document.getElementById('csvFile').value = '';
+    pendingImportData = [];
+    showToast(`✅ ${added} rows imported! ${duplicates > 0 ? `(${duplicates} duplicates skip)` : ''}`);
+    showPage('viewPage', document.querySelector('.nav-links a'));
+}
+
+function cancelImport() {
+    document.getElementById('previewSection').style.display = 'none';
+    document.getElementById('csvFile').value = '';
+    pendingImportData = [];
+    showToast('❌ Import cancelled!');
+}
+
 function addEntry() {
     const date = document.getElementById('newDate').value;
     const creativeId = document.getElementById('newCreativeId').value.trim();
     const primary = document.getElementById('newPrimary').value.trim();
     const secondary = document.getElementById('newSecondary').value.trim();
+    const classifier = document.getElementById('newClassifier').value.trim();
     const type = document.getElementById('newType').value;
     const note = document.getElementById('newNote').value.trim();
-    const image = document.getElementById('newImage').value.trim();
 
-    // Validation
     if (!date || !creativeId || !primary) {
         document.getElementById('formError').style.display = 'block';
-        document.getElementById('formSuccess').style.display = 'none';
         setTimeout(() => document.getElementById('formError').style.display = 'none', 3000);
         return;
     }
 
-    const newEntry = {
-        id: nextId++,
-        date, creativeId, primaryProduct: primary,
-        secondaryProduct: secondary, note, image,
-        type: type || 'Regular'
-    };
-
-    allData.unshift(newEntry);
-    filteredData = getBase();
+    allData.unshift({ id: nextId++, date, creativeId, primaryProduct: primary, secondaryProduct: secondary, note, classifier, type: type||'Regular' });
+    filteredData = [...allData];
     currentPage = 1;
     updateStats();
-
     document.getElementById('formSuccess').style.display = 'block';
-    document.getElementById('formError').style.display = 'none';
     setTimeout(() => document.getElementById('formSuccess').style.display = 'none', 3000);
-
     resetForm();
-    showToast('✅ New update added! View Updates-la parunga!');
+    showToast('✅ Update added!');
 }
 
 function resetForm() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('newDate').value = today;
-    document.getElementById('newCreativeId').value = '';
-    document.getElementById('newPrimary').value = '';
-    document.getElementById('newSecondary').value = '';
+    ['newCreativeId','newPrimary','newSecondary','newClassifier','newNote'].forEach(id => {
+        document.getElementById(id).value = '';
+    });
     document.getElementById('newType').value = 'Regular';
-    document.getElementById('newNote').value = '';
-    document.getElementById('newImage').value = '';
 }
 
-// ========== DELETE ==========
 function deleteEntry(id) {
-    if (!confirm('Intha update delete pannalama?')) return;
+    if (!confirm('Delete pannalama?')) return;
     allData = allData.filter(d => d.id !== id);
     filteredData = filteredData.filter(d => d.id !== id);
     updateStats();
     renderTable();
-    showToast('🗑️ Update deleted!');
+    showToast('🗑️ Deleted!');
 }
 
-// ========== MODAL ==========
 function showModal(id) {
     const row = allData.find(d => d.id === id);
     if (!row) return;
@@ -924,31 +864,28 @@ function showModal(id) {
     document.getElementById('modalBody').innerHTML = `
         <div class="modal-detail"><strong>📅 Date:</strong> ${formatDate(row.date)}</div>
         <div class="modal-detail"><strong>🔢 Creative ID:</strong> ${row.creativeId}</div>
-        <div class="modal-detail"><strong>📦 Primary Product:</strong> ${row.primaryProduct}</div>
-        <div class="modal-detail"><strong>🔗 Secondary Product:</strong> ${row.secondaryProduct || '-'}</div>
+        <div class="modal-detail"><strong>📦 Primary:</strong> ${row.primaryProduct}</div>
+        <div class="modal-detail"><strong>🔗 Secondary:</strong> ${row.secondaryProduct||'-'}</div>
+        <div class="modal-detail"><strong>👤 Classifier:</strong> ${row.classifier||'-'}</div>
         <div class="modal-detail"><strong>🏷️ Type:</strong> ${getTypeBadge(row.type)}</div>
-        <div class="modal-detail"><strong>📝 Notes:</strong> ${row.note || '-'}</div>
-        ${row.image ? `<div class="modal-detail"><strong>🖼️ Image:</strong><br><img src="${row.image}" style="max-width:100%;border-radius:8px;margin-top:10px"></div>` : ''}
+        <div class="modal-detail"><strong>📝 Notes:</strong> ${row.note||'-'}</div>
     `;
     document.getElementById('modalOverlay').classList.add('show');
 }
 
 function closeModal(e) {
-    if (e.target === document.getElementById('modalOverlay')) {
+    if (e.target === document.getElementById('modalOverlay'))
         document.getElementById('modalOverlay').classList.remove('show');
-    }
 }
-
 function closeModalDirect() {
     document.getElementById('modalOverlay').classList.remove('show');
 }
 
-// ========== TOAST ==========
 function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.style.display = 'block';
-    setTimeout(() => t.style.display = 'none', 3000);
+    setTimeout(() => t.style.display = 'none', 3500);
 }
 </script>
 </body>
