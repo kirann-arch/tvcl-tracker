@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TVCL Update Tracker</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        
+        body { background: #f0f2f5; }
+
+        /* NAVBAR */
+        .navbar {
+            background: #1a73e8;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .navbar h1 { color: white; font-size: 22px; }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+        .nav-links a:hover, .nav-links a.active { background: rgba(255,255,255,0.2); }
+
+        /* PAGES */
+        .page { display: none; padding: 30px; }
+        .page.active { display: block; }
+
+        /* SEARCH */
+        .search-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .search-container h2 { margin-bottom: 15px; color: #333; }
+        .search-box { display: flex; gap: 10px; }
+        .search-box input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #1a73e8;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+        .search-box input:focus { border-color: #0d47a1; box-shadow: 0 0 8px rgba(26,115,232,0.3); }
+        .search-box button {
+            padding: 12px 25px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background 0.3s;
+        }
+        .search-box button:hover { background: #0d47a1; }
+        .clear-btn { background: #6c757d !important; }
+        .clear-btn:hover { background: #545b62 !important; }
+
+        /* STATS */
+        .stats-bar { display: flex; gap: 15px; margin-bottom: 20px; }
+        .stat-card {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            flex: 1;
+        }
+        .stat-card .number { font-size: 28px; font-weight: bold; color: #1a73e8; }
+        .stat-card .label { color: #666; font-size: 13px; margin-top: 4px; }
+
+        /* FILTER */
+        .filter-row { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .filter-btn {
+            padding: 7px 18px;
+            border: 2px solid #1a73e8;
+            background: white;
+            color: #1a73e8;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        .filter-btn:hover, .filter-btn.active { background: #1a73e8; color: white; }
+
+        /* TABLE */
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .table-header {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .table-header h3 { color: #333; }
+        .result-count { color: #666; font-size: 14px; }
+
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: #1a73e8; color: white; }
+        thead th {
+            padding: 13px 14px;
+            text-align: left;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+        thead th:hover { background: #0d47a1; }
+
+        tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.2s; }
+        tbody tr:hover { background: #e8f0fe; }
+        tbody tr:nth-child(even) { background: #f8f9fa; }
+        tbody tr:nth-child(even):hover { background: #e8f0fe; }
+        tbody td { padding: 11px 14px; font-size: 13px; color: #333; }
+
+        .highlight { background: #ffeb3b; border-radius: 3px; padding: 1px 3px; }
+
+        /* BADGES */
+        .badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .badge-promo { background: #e3f2fd; color: #1565c0; }
+        .badge-coop { background: #fff3e0; color: #e65100; }
+        .badge-regular { background: #f3f4f6; color: #374151; }
+        .badge-nonad { background: #fce4ec; color: #c62828; }
+
+        /* NOTE COLUMN */
+        .note-cell {
+            max-width: 250px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: pointer;
+            color: #1a73e8;
+        }
+        .note-cell:hover { white-space: normal; color: #333; }
+
+        /* IMAGE PLACEHOLDER */
+        .img-placeholder {
+            width: 40px;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* NO RESULTS */
+        .no-results { text-align: center; padding: 50px; color: #999; }
+        .no-results .icon { font-size: 50px; margin-bottom: 15px; }
+
+        /* PAGINATION */
+        .pagination { display: flex; justify-content: center; align-items: center; padding: 20px; gap: 5px; flex-wrap: wrap; }
+        .page-btn {
+            padding: 7px 13px;
+            border: 1px solid #dee2e6;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+        .page-btn:hover, .page-btn.active { background: #1a73e8; color: white; border-color: #1a73e8; }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* MANUAL FORM */
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .form-container h2 {
+            color: #333;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #1a73e8;
+        }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-group label { font-weight: 600; color: #555; margin-bottom: 7px; font-size: 14px; }
+        .form-group input, .form-group textarea, .form-group select {
+            padding: 10px 14px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: #1a73e8; }
+        .form-group textarea { height: 90px; resize: vertical; }
+        .required { color: red; }
+
+        .btn-row { display: flex; gap: 15px; margin-top: 25px; }
+        .submit-btn {
+            padding: 12px 35px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background 0.3s;
+        }
+        .submit-btn:hover { background: #1e7e34; }
+        .reset-btn {
+            padding: 12px 25px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .reset-btn:hover { background: #545b62; }
+
+        /* SUCCESS / ERROR */
+        .alert {
+            display: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #333;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 9999;
+            font-size: 14px;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal h3 { color: #1a73e8; margin-bottom: 15px; }
+        .modal-close {
+            float: right;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .modal-detail { margin: 10px 0; font-size: 14px; }
+        .modal-detail strong { color: #555; display: inline-block; width: 160px; }
+
+        /* DELETE BTN */
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .delete-btn:hover { background: #c82333; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .stats-bar { flex-direction: column; }
+            .form-grid { grid-template-columns: 1fr; }
+            .navbar { flex-direction: column; gap: 10px; }
+            .page { padding: 15px; }
+            tbody td { font-size: 12px; padding: 8px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <h1>📊 TVCL Update Tracker</h1>
+    <div class="nav-links">
+        <a class="active" onclick="showPage('viewPage', this)">🔍 View Updates</a>
+        <a onclick="showPage('addPage', this)">➕ Add Update</a>
+    </div>
+</nav>
+
+<!-- ========== VIEW PAGE ========== -->
+<div id="viewPage" class="page active">
+
+    <!-- Search -->
+    <div class="search-container">
+        <h2>🔍 Search Updates</h2>
+        <div class="search-box">
+            <input type="text" id="searchInput"
+                placeholder="Search by Creative ID, Primary Product, Secondary Product, Notes..."
+                onkeyup="searchData()">
+            <button onclick="searchData()">🔍 Search</button>
+            <button class="clear-btn" onclick="clearSearch()">✖ Clear</button>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="number" id="totalCount">0</div>
+            <div class="label">Total Updates</div>
+        </div>
+        <div class="stat-card">
+            <div class="number" id="coopCount">0</div>
+            <div class="label">Coop Updates</div>
+        </div>
+        <div class="stat-card">
+            <div class="number" id="promoCount">0</div>
+            <div class="label">Promo Updates</div>
+        </div>
+        <div class="stat-card">
+            <div class="number" id="todayCount">0</div>
+            <div class="label">Today's Updates</div>
+        </div>
+        <div class="stat-card">
+            <div class="number" id="searchCount">0</div>
+            <div class="label">Search Results</div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-row">
+        <button class="filter-btn active" onclick="applyFilter('all', this)">📋 All</button>
+        <button class="filter-btn" onclick="applyFilter('coop', this)">🤝 Coop Only</button>
+        <button class="filter-btn" onclick="applyFilter('promo', this)">📺 Promo Only</button>
+        <button class="filter-btn" onclick="applyFilter('today', this)">📅 Today's</button>
+        <button class="filter-btn" onclick="applyFilter('nonad', this)">🚫 Non Ad</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3>📋 Updates List</h3>
+            <span class="result-count" id="resultCount">Loading...</span>
+        </div>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th onclick="sortTable('date')"># &nbsp;📅 Date ↕</th>
+                        <th onclick="sortTable('creativeId')">🔢 Creative ID ↕</th>
+                        <th onclick="sortTable('primaryProduct')">📦 Primary Product ↕</th>
+                        <th onclick="sortTable('secondaryProduct')">🔗 Secondary Product ↕</th>
+                        <th>📝 Notes</th>
+                        <th>🖼️ Image</th>
+                        <th>🏷️ Type</th>
+                        <th>⚙️ Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <div id="noResults" class="no-results" style="display:none;">
+            <div class="icon">🔎</div>
+            <h3>No results found!</h3>
+            <p>Try different keywords</p>
+        </div>
+
+        <div class="pagination" id="pagination"></div>
+    </div>
+</div>
+
+<!-- ========== ADD PAGE ========== -->
+<div id="addPage" class="page">
+    <div class="form-container">
+        <h2>➕ Add New Update</h2>
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>📅 Date <span class="required">*</span></label>
+                <input type="date" id="newDate">
+            </div>
+
+            <div class="form-group">
+                <label>🔢 Creative ID <span class="required">*</span></label>
+                <input type="text" id="newCreativeId" placeholder="e.g. 25081815612">
+            </div>
+
+            <div class="form-group">
+                <label>📦 Primary Product <span class="required">*</span></label>
+                <input type="text" id="newPrimary" placeholder="e.g. Honda Accord Hybrid : Hybrid Car : Leasing">
+            </div>
+
+            <div class="form-group">
+                <label>🔗 Secondary Product (Coop)</label>
+                <input type="text" id="newSecondary" placeholder="e.g. Amazon (Coop), Best Buy (Coop)">
+            </div>
+
+            <div class="form-group">
+                <label>🏷️ Type</label>
+                <select id="newType">
+                    <option value="Regular">Regular</option>
+                    <option value="Coop">Coop</option>
+                    <option value="Promo">Promo</option>
+                    <option value="Non Ad">Non Ad</option>
+                    <option value="Sponsored">Sponsored</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>🖼️ Image / Screenshot URL</label>
+                <input type="text" id="newImage" placeholder="Paste image URL (optional)">
+            </div>
+
+            <div class="form-group full">
+                <label>📝 Note / Clarification Details</label>
+                <textarea id="newNote" placeholder="Add any clarification notes here... e.g. No coops on promos, Keep as is, etc."></textarea>
+            </div>
+
+        </div>
+
+        <div class="btn-row">
+            <button class="submit-btn" onclick="addEntry()">✅ Add Update</button>
+            <button class="reset-btn" onclick="resetForm()">🔄 Reset</button>
+        </div>
+
+        <div id="formSuccess" class="alert alert-success">✅ Update added successfully! View Updates page-la parunga!</div>
+        <div id="formError" class="alert alert-error">⚠️ Date, Creative ID, Primary Product - mandatory fields fill pannunga!</div>
+    </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" id="modalContent">
+        <button class="modal-close" onclick="closeModalDirect()">✖ Close</button>
+        <h3 id="modalTitle">Update Details</h3>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== SAMPLE DATA (Unga Excel data) ==========
+let allData = [
+    {
+        id: 1,
+        date: "2026-08-25",
+        creativeId: "25088524275",
+        primaryProduct: "Southern Quality Ford Dealer Assn Bronco : Multi Gas SUVs/Crossovers : Dealer Assn - Sales Event",
+        secondaryProduct: "",
+        note: "",
+        image: "",
+        type: "Regular"
+    },
+    {
+        id: 2,
+        date: "2026-08-25",
+        creativeId: "25088510781",
+        primaryProduct: "NBC-Various Programs : Promo",
+        secondaryProduct: "",
+        note: "Keep that as is",
+        image: "",
+        type: "Promo"
+    },
+    {
+        id: 3,
+        date: "2026-08-25",
+        creativeId: "25085505360",
+        primaryProduct: "Dell PowerStore : Data Storage System",
+        secondaryProduct: "",
+        note: "",
+        image: "",
+        type: "Regular"
+    },
+    {
+        id: 4,
+        date: "2026-08-26",
+        creativeId: "25088591968",
+        primaryProduct: "Tuskegee University Golden Tigers Womens Soccer : Spectator Sporting Event",
+        secondaryProduct: "",
+        note: "",
+        image: "",
+        type: "Regular"
+    },
+    {
+        id: 5,
+        date: "2026-08-26",
+        creativeId: "25088619153",
+        primaryProduct: "Big Board Sports Special : Promo",
+        secondaryProduct: "",
+        note: "No coops on promos",
+        image: "",
+        type: "Promo"
+    },
+    {
+        id: 6,
+        date: "2026-08-26",
+        creativeId: "25088619169",
+        primaryProduct: "Gospel Notes : Promo",
+        secondaryProduct: "",
+        note: "",
+        image: "",
+        type: "Promo"
+    },
+    {
+        id: 7,
+        date: "2026-08-26",
+        creativeId: "25067744073",
+        primaryProduct: "Studio 814 : Promo",
+        secondaryProduct: "",
+        note: "Please make sure classifiers understand we do not use these products. AI autoclassifier chooses these a lot but they should not be used.",
+        image: "",
+        type: "Promo"
+    },
+    {
+        id: 8,
+        date: "2026-08-03",
+        creativeId: "25086195478",
+        primaryProduct: "Clorox ToiletWand : Toilet Cleaner",
+        secondaryProduct: "",
+        note: "",
+        image: "",
+        type: "Regular"
+    },
+    {
+        id: 9,
+        date: "2026-08-04",
+        creativeId: "25086119007",
+        primaryProduct: "CiShirts Printing/Sign Services & Courtside Marketing Advertising/Marketing Services : Combo",
+        secondaryProduct: "",
+        note: "",
+        image: "",
+        type: "Regular"
+    },
+    {
+        id: 10,
+        date: "2026-08-04",
+        creativeId: "25083276257",
+        primaryProduct: "PlayingWithHeart.com : High Cholesterol",
+        secondaryProduct: "",
+        note: "",
+        image: "",
+        type: "Regular"
+    },
+    {
+        id: 11,
+        date: "2026-08-04",
+        creativeId: "25085963053",
+        primaryProduct: "Non Ad",
+        secondaryProduct: "",
+        note: "",
+        image: "",
+        type: "Non Ad"
+    },
+    {
+        id: 12,
+        date: "2026-08-04",
+        creativeId: "25086021452",
+        primaryProduct: "ABC-Hearts Of Heros : Promo",
+        secondaryProduct: "",
+        note: "",
+        image: "",
+        type: "Promo"
+    },
+    {
+        id: 13,
+        date: "2026-08-04",
+        creativeId: "25086198828",
+        primaryProduct: "Idaho Central Credit Union : Consumer Checking",
+        secondaryProduct: "",
+        note: "",
+        image: "",
+        type: "Regular"
+    },
+    {
+        id: 14,
+        date: "2026-08-04",
+        creativeId: "25086215647",
+        primaryProduct: "Visible : Consumer Pre-Paid Wireless Service",
+        secondaryProduct: "Best Buy : Phones & Equipment (Coop)",
+        note: "",
+        image: "",
+        type: "Coop"
+    },
+    {
+        id: 15,
+        date: "2026-08-04",
+        creativeId: "25086234426",
+        primaryProduct: "Idaho Central Credit Union : Consumer Checking",
+        secondaryProduct: "",
+        note: "",
+        image: "",
+        type: "Regular"
+    },
+    {
+        id: 16,
+        date: "2026-08-04",
+        creativeId: "25086230615",
+        primaryProduct: "Subaru Of New England Dealer Assn Forester : Multi SUVs/Crossovers : Dealer Assn - Sales Event",
+        secondaryProduct: "",
+        note: "",
+        image: "",
+        type: "Regular"
+    },
+    {
+        id: 17,
+        date: "2026-08-04",
+        creativeId: "25085955817",
+        primaryProduct: "NACA Neighborhood Assistance Corp Of America : Corporate Sponsorship",
+        secondaryProduct: "",
+        note: "",
+        image: "",
+        type: "Sponsored"
+    }
+];
+
+let filteredData = [...allData];
+let currentPage = 1;
+const rowsPerPage = 15;
+let currentFilter = 'all';
+let sortKey = 'date';
+let sortAsc = false;
+let nextId = allData.length + 1;
+
+// ========== INIT ==========
+window.onload = function() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('newDate').value = today;
+    updateStats();
+    renderTable();
+};
+
+// ========== SHOW PAGE ==========
+function showPage(pageId, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    el.classList.add('active');
+}
+
+// ========== SEARCH ==========
+function searchData() {
+    const kw = document.getElementById('searchInput').value.toLowerCase().trim();
+    let base = getBase();
+    if (kw) {
+        filteredData = base.filter(r =>
+            r.creativeId.toLowerCase().includes(kw) ||
+            r.primaryProduct.toLowerCase().includes(kw) ||
+            r.secondaryProduct.toLowerCase().includes(kw) ||
+            r.note.toLowerCase().includes(kw) ||
+            r.type.toLowerCase().includes(kw) ||
+            r.date.includes(kw)
+        );
+    } else {
+        filteredData = base;
+    }
+    currentPage = 1;
+    document.getElementById('searchCount').textContent = filteredData.length;
+    renderTable();
+}
+
+function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    filteredData = getBase();
+    currentPage = 1;
+    document.getElementById('searchCount').textContent = filteredData.length;
+    renderTable();
+}
+
+// ========== FILTER ==========
+function getBase() {
+    const today = new Date().toISOString().split('T')[0];
+    switch(currentFilter) {
+        case 'coop': return allData.filter(d => d.type === 'Coop');
+        case 'promo': return allData.filter(d => d.type === 'Promo');
+        case 'today': return allData.filter(d => d.date === today);
+        case 'nonad': return allData.filter(d => d.type === 'Non Ad');
+        default: return [...allData];
+    }
+}
+
+function applyFilter(filter, btn) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('searchInput').value = '';
+    filteredData = getBase();
+    currentPage = 1;
+    document.getElementById('searchCount').textContent = filteredData.length;
+    renderTable();
+}
+
+// ========== SORT ==========
+function sortTable(key) {
+    if (sortKey === key) sortAsc = !sortAsc;
+    else { sortKey = key; sortAsc = true; }
+    filteredData.sort((a, b) => {
+        const va = (a[key] || '').toString().toLowerCase();
+        const vb = (b[key] || '').toString().toLowerCase();
+        if (va < vb) return sortAsc ? -1 : 1;
+        if (va > vb) return sortAsc ? 1 : -1;
+        return 0;
+    });
+    currentPage = 1;
+    renderTable();
+}
+
+// ========== RENDER TABLE ==========
+function renderTable() {
+    const kw = document.getElementById('searchInput').value.toLowerCase().trim();
+    const tbody = document.getElementById('tableBody');
+    const noResults = document.getElementById('noResults');
+    const resultCount = document.getElementById('resultCount');
+
+    if (filteredData.length === 0) {
+        tbody.innerHTML = '';
+        noResults.style.display = 'block';
+        resultCount.textContent = 'No records found';
+        document.getElementById('pagination').innerHTML = '';
+        return;
+    }
+
+    noResults.style.display = 'none';
+    resultCount.textContent = `Showing ${filteredData.length} of ${allData.length} records`;
+
+    const start = (currentPage - 1) * rowsPerPage;
+    const pageData = filteredData.slice(start, start + rowsPerPage);
+
+    tbody.innerHTML = pageData.map((row, idx) => `
+        <tr>
+            <td>${start + idx + 1} &nbsp; ${formatDate(row.date)}</td>
+            <td><strong>${hl(row.creativeId, kw)}</strong></td>
+            <td style="max-width:220px">${hl(row.primaryProduct, kw)}</td>
+            <td style="max-width:180px">${row.secondaryProduct ? hl(row.secondaryProduct, kw) : '<span style="color:#ccc">-</span>'}</td>
+            <td>
+                ${row.note
+                    ? `<span class="note-cell" title="${row.note}" onclick="showModal(${row.id})">📝 ${row.note.substring(0,30)}${row.note.length > 30 ? '...' : ''}</span>`
+                    : '<span style="color:#ccc">-</span>'}
+            </td>
+            <td>
+                ${row.image
+                    ? `<img src="${row.image}" style="width:40px;height:30px;border-radius:4px;object-fit:cover;cursor:pointer" onclick="showModal(${row.id})">`
+                    : `<div class="img-placeholder" onclick="showModal(${row.id})">🖼️</div>`}
+            </td>
+            <td>${getTypeBadge(row.type)}</td>
+            <td>
+                <button class="delete-btn" onclick="deleteEntry(${row.id})">🗑️</button>
+            </td>
+        </tr>
+    `).join('');
+
+    renderPagination();
+}
+
+function hl(text, kw) {
+    if (!kw || !text) return text || '';
+    const regex = new RegExp(`(${kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '<span class="highlight">$1</span>');
+}
+
+function formatDate(d) {
+    if (!d) return '-';
+    const dt = new Date(d);
+    return dt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function getTypeBadge(type) {
+    const map = {
+        'Coop': '<span class="badge badge-coop">🤝 Coop</span>',
+        'Promo': '<span class="badge badge-promo">📺 Promo</span>',
+        'Non Ad': '<span class="badge badge-nonad">🚫 Non Ad</span>',
+        'Regular': '<span class="badge badge-regular">📋 Regular</span>',
+        'Sponsored': '<span class="badge" style="background:#e8f5e9;color:#2e7d32">⭐ Sponsored</span>'
+    };
+    return map[type] || `<span class="badge badge-regular">${type}</span>`;
+}
+
+// ========== PAGINATION ==========
+function renderPagination() {
+    const total = Math.ceil(filteredData.length / rowsPerPage);
+    const pg = document.getElementById('pagination');
+    if (total <= 1) { pg.innerHTML = ''; return; }
+
+    let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>◀ Prev</button>`;
+    for (let i = 1; i <= total; i++) {
+        if (i === 1 || i === total || (i >= currentPage-2 && i <= currentPage+2)) {
+            html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+        } else if (i === currentPage-3 || i === currentPage+3) {
+            html += `<span style="padding:5px">...</span>`;
+        }
+    }
+    html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===total?'disabled':''}>Next ▶</button>`;
+    pg.innerHTML = html;
+}
+
+function goPage(p) {
+    const total = Math.ceil(filteredData.length / rowsPerPage);
+    if (p < 1 || p > total) return;
+    currentPage = p;
+    renderTable();
+}
+
+// ========== STATS ==========
+function updateStats() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('totalCount').textContent = allData.length;
+    document.getElementById('coopCount').textContent = allData.filter(d => d.type === 'Coop').length;
+    document.getElementById('promoCount').textContent = allData.filter(d => d.type === 'Promo').length;
+    document.getElementById('todayCount').textContent = allData.filter(d => d.date === today).length;
+    document.getElementById('searchCount').textContent = filteredData.length;
+}
+
+// ========== ADD ENTRY ==========
+function addEntry() {
+    const date = document.getElementById('newDate').value;
+    const creativeId = document.getElementById('newCreativeId').value.trim();
+    const primary = document.getElementById('newPrimary').value.trim();
+    const secondary = document.getElementById('newSecondary').value.trim();
+    const type = document.getElementById('newType').value;
+    const note = document.getElementById('newNote').value.trim();
+    const image = document.getElementById('newImage').value.trim();
+
+    // Validation
+    if (!date || !creativeId || !primary) {
+        document.getElementById('formError').style.display = 'block';
+        document.getElementById('formSuccess').style.display = 'none';
+        setTimeout(() => document.getElementById('formError').style.display = 'none', 3000);
+        return;
+    }
+
+    const newEntry = {
+        id: nextId++,
+        date, creativeId, primaryProduct: primary,
+        secondaryProduct: secondary, note, image,
+        type: type || 'Regular'
+    };
+
+    allData.unshift(newEntry);
+    filteredData = getBase();
+    currentPage = 1;
+    updateStats();
+
+    document.getElementById('formSuccess').style.display = 'block';
+    document.getElementById('formError').style.display = 'none';
+    setTimeout(() => document.getElementById('formSuccess').style.display = 'none', 3000);
+
+    resetForm();
+    showToast('✅ New update added! View Updates-la parunga!');
+}
+
+function resetForm() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('newDate').value = today;
+    document.getElementById('newCreativeId').value = '';
+    document.getElementById('newPrimary').value = '';
+    document.getElementById('newSecondary').value = '';
+    document.getElementById('newType').value = 'Regular';
+    document.getElementById('newNote').value = '';
+    document.getElementById('newImage').value = '';
+}
+
+// ========== DELETE ==========
+function deleteEntry(id) {
+    if (!confirm('Intha update delete pannalama?')) return;
+    allData = allData.filter(d => d.id !== id);
+    filteredData = filteredData.filter(d => d.id !== id);
+    updateStats();
+    renderTable();
+    showToast('🗑️ Update deleted!');
+}
+
+// ========== MODAL ==========
+function showModal(id) {
+    const row = allData.find(d => d.id === id);
+    if (!row) return;
+    document.getElementById('modalTitle').textContent = `Creative ID: ${row.creativeId}`;
+    document.getElementById('modalBody').innerHTML = `
+        <div class="modal-detail"><strong>📅 Date:</strong> ${formatDate(row.date)}</div>
+        <div class="modal-detail"><strong>🔢 Creative ID:</strong> ${row.creativeId}</div>
+        <div class="modal-detail"><strong>📦 Primary Product:</strong> ${row.primaryProduct}</div>
+        <div class="modal-detail"><strong>🔗 Secondary Product:</strong> ${row.secondaryProduct || '-'}</div>
+        <div class="modal-detail"><strong>🏷️ Type:</strong> ${getTypeBadge(row.type)}</div>
+        <div class="modal-detail"><strong>📝 Notes:</strong> ${row.note || '-'}</div>
+        ${row.image ? `<div class="modal-detail"><strong>🖼️ Image:</strong><br><img src="${row.image}" style="max-width:100%;border-radius:8px;margin-top:10px"></div>` : ''}
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal(e) {
+    if (e.target === document.getElementById('modalOverlay')) {
+        document.getElementById('modalOverlay').classList.remove('show');
+    }
+}
+
+function closeModalDirect() {
+    document.getElementById('modalOverlay').classList.remove('show');
+}
+
+// ========== TOAST ==========
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 3000);
+}
+</script>
+</body>
+</html>
