@@ -700,77 +700,115 @@ function handleFileSelect(e) {
 }
 
 function processCSV(file) {
-    if (!file.name.endsWith('.csv')) {
-        showToast('⚠️ CSV file mattum upload pannunga!');
-        return;
-    }
     const reader = new FileReader();
     reader.onload = function(e) {
         const text = e.target.result;
-        const rows = text.split('\n').filter(r => r.trim());
-        if (rows.length < 2) { showToast('⚠️ File-la data illai!'); return; }
+        const allRows = text.split('\n').filter(r => r.trim());
 
-        const headers = rows[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g,''));
+        // Auto find header row
+        // "date" AND "creative" irukura row = header row
+        let headerRowIndex = -1;
+        for (let i = 0; i < allRows.length; i++) {
+            const rowLower = allRows[i].toLowerCase();
+            if (
+                rowLower.includes('date') &&
+                rowLower.includes('creative') &&
+                rowLower.includes('primary')
+            ) {
+                headerRowIndex = i;
+                break;
+            }
+        }
+
+        if (headerRowIndex === -1) {
+            showToast('⚠️ Header row kanavillai!');
+            return;
+        }
+
+        // Parse headers from found row
+        const headers = parseCSVRow(allRows[headerRowIndex])
+            .map(h => h.trim()
+                .toLowerCase()
+                .replace(/"/g, '')
+                .replace(/\r/g, '')
+            );
+
+        // Data = header row + 1 irundhu
+        const dataRows = allRows.slice(headerRowIndex + 1);
         pendingImportData = [];
 
-        for (let i = 1; i < rows.length; i++) {
-            const cols = parseCSVRow(rows[i]);
+        for (let i = 0; i < dataRows.length; i++) {
+            const cols = parseCSVRow(dataRows[i]);
             if (cols.length < 2) continue;
 
             const getCol = (...names) => {
                 for (let name of names) {
-                    const idx = headers.findIndex(h => h.includes(name));
-                    if (idx !== -1) return (cols[idx]||'').trim().replace(/^"|"$/g,'');
+                    let idx = headers.findIndex(h => h.includes(name));
+                    if (idx !== -1 && cols[idx]) {
+                        return cols[idx].trim()
+                            .replace(/^"|"$/g, '')
+                            .replace(/\r/g, '');
+                    }
                 }
                 return '';
             };
 
-            const dateRaw = getCol('date');
-            const creativeId = getCol('creative id', 'creativeid', 'id');
-            const primary = getCol('primary product', 'primary');
-            const secondary = getCol('secondary product', 'secondary');
-            const note = getCol('note', 'clarification', 'details');
-            const classifier = getCol('classifier', 'name');
+            const dateRaw    = getCol('date');
+            const creativeId = getCol('creative id', 'creative');
+            const primary    = getCol('primary product', 'primary');
+            const secondary  = getCol('secondary product', 'secondary');
+            const note       = getCol('note', 'clarification');
+            const classifier = getCol('update provided by',
+                                      'provided by',
+                                      'classifier');
 
+            // Empty / invalid rows skip
             if (!creativeId && !primary) continue;
+            if (creativeId === '-' || primary === '-') continue;
 
+            // Auto type detect
             let type = 'Regular';
-            if (secondary && secondary.toLowerCase().includes('coop')) type = 'Coop';
-            else if (primary.toLowerCase().includes('promo')) type = 'Promo';
-            else if (primary.toLowerCase().includes('non ad')) type = 'Non Ad';
+            const secLower = (secondary || '').toLowerCase();
+            const priLower = (primary || '').toLowerCase();
+            const noteLower = (note || '').toLowerCase();
 
+            if (secLower.includes('coop'))              type = 'Coop';
+            else if (priLower.includes(': promo') ||
+                     priLower.includes('promo'))        type = 'Promo';
+            else if (priLower.includes('non ad'))       type = 'Non Ad';
+            else if (noteLower.includes('sponsored'))   type = 'Sponsored';
+
+            // Date format fix
             let formattedDate = '';
             if (dateRaw) {
                 const d = new Date(dateRaw);
-                if (!isNaN(d)) formattedDate = d.toISOString().split('T')[0];
-                else formattedDate = dateRaw;
+                if (!isNaN(d)) {
+                    formattedDate = d.toISOString().split('T')[0];
+                } else {
+                    formattedDate = dateRaw;
+                }
             }
 
-            pendingImportData.push({ date: formattedDate, creativeId, primaryProduct: primary, secondaryProduct: secondary, note, classifier, type });
+            pendingImportData.push({
+                date:           formattedDate,
+                creativeId,
+                primaryProduct: primary,
+                secondaryProduct: secondary,
+                note,
+                classifier,
+                type
+            });
         }
 
         if (pendingImportData.length === 0) {
             showToast('⚠️ Data parse aagalai!');
             return;
         }
+
         showPreview();
     };
-    reader.readAsText(file);
+    reader.readAsText(file, 'UTF-8');
 }
-
-function parseCSVRow(row) {
-    const result = [];
-    let current = '';
-    let inQuotes = false;
-    for (let i = 0; i < row.length; i++) {
-        if (row[i] === '"') inQuotes = !inQuotes;
-        else if (row[i] === ',' && !inQuotes) { result.push(current); current = ''; }
-        else current += row[i];
-    }
-    result.push(current);
-    return result;
-}
-
 function showPreview() {
     const previewSection = document.getElementById('previewSection');
     document.getElementById('previewInfo').textContent = `✅ ${pendingImportData.length} rows ready! Correct ah irukka confirm pannunga.`;
